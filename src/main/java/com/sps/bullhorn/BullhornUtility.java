@@ -8,7 +8,7 @@ import java.util.Set;
 
 public class BullhornUtility extends GridPane {
 
-	private BullhornAPI bullhorn;
+	private final BullhornAPI bullhorn;
 	
 	public BullhornUtility(BullhornAPI bullhorn) {
 		this.bullhorn = bullhorn;

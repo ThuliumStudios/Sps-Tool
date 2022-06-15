@@ -22,15 +22,10 @@ dependencies {
     implementation 'org.springframework:spring-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-    implementation group: 'com.restfb', name: 'restfb', version: '3.17.0'
-    implementation group: 'com.opencsv', name: 'opencsv', version: '5.4'
-    implementation group: 'org.jsoup', name: 'jsoup', version: '1.13.1'
     implementation 'org.apache.poi:poi:5.0.0'
     implementation 'org.apache.poi:poi-ooxml:5.0.0'
     // https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox
     implementation 'org.apache.pdfbox:pdfbox:3.0.0-RC1'
-
-    // implementation fileTree(dir: 'libs', includes: ['*.jar'])
 }
 
 test {
@@ -48,8 +43,6 @@ javafx {
 
 jar {
     zip64=true
-    // archiveFileName = 'TestName.jar'
-
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
     into 'resources', {

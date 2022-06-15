@@ -8,12 +8,8 @@ import com.bullhornsdk.data.model.entity.core.type.BullhornEntity;
 import com.bullhornsdk.data.model.entity.embedded.OneToMany;
 import com.bullhornsdk.data.model.parameter.standard.ParamFactory;
 import com.bullhornsdk.data.model.response.resume.ParsedResume;
-import javafx.scene.control.Label;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.apache.pdfbox.Loader;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.text.PDFTextStripper;
 import org.joda.time.DateTime;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,25 +25,16 @@ import java.util.Properties;
 import java.util.Set;
 
 public class BullhornAPI {
-	public static final String username = "SouthernPoint.API";
-	public static final String password = "$p$1501!";
-	public static final String authUrl = "https://auth-east.bullhornstaffing.com/oauth/authorize";
-	public static final String clientID = "6039f6b6-c91a-42be-bd7c-b61f69b4dea6";
-	public static final String clientSecret = "1ocsoDf4JNPLnTYFOWcd96Ol";
-	public static final String loginUrl = "https://rest.bullhornstaffing.com/rest-services/login";
-	public static final String tokenUrl = "https://auth-east.bullhornstaffing.com/oauth/token";
-	public static final String minutesToLive = "60";
-
 	private String createdStatus = "Created";
 
-	private Set<String> fieldSet = new HashSet<>();
+	private final Set<String> fieldSet = new HashSet<>();
 
 	private BullhornRestCredentials creds;
 	private BullhornData bullhornData;
 
-	private Properties bullhornProps;
-	private Logger logger;
-	private Path filePath;
+	private final Properties bullhornProps;
+	private final Logger logger;
+	private final Path filePath;
 
 	public BullhornAPI() {
 		System.out.println("Connecting to Bullhorn API");
