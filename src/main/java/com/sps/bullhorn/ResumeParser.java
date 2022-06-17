@@ -25,14 +25,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ResumeParser extends BullhornUtility {
-	private List<Label> newCandidates = new ArrayList<>();
+	private final List<Label> newCandidates = new ArrayList<>();
 
 	private Label status;
-	private TextField jobTitleField;
-	private ComboBox<String> dateField, sourceField;
+	private final TextField jobTitleField;
+	private final ComboBox<String> dateField;
+	private final ComboBox<String> sourceField;
 
-	private HBox fieldBox;
-	private VBox statusBox;
+	private final HBox fieldBox;
+	private final VBox statusBox;
 
 	public ResumeParser(BullhornAPI bh) {
 		super(bh);

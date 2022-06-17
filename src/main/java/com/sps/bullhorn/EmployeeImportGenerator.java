@@ -22,29 +22,41 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.time.DayOfWeek;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-public class EmployeeImportGenerator extends BullhornUtility{
-    // private final String payroll = "C:/Southern Point Staffing/Southern Point Staffing Team Site - Finance/Payroll/Vensure";
-    private final String payroll = System.getProperty("user.home") +
-            "\\Southern Point Staffing\\Southern Point Staffing Team Site - Finance\\Payroll\\Vensure";
+public class EmployeeImportGenerator extends BullhornUtility {
+    // For mapping state letter to Vensure import
+    private final Map<String, String> maritalStatus = Map.of(
+            "A", "S",
+            "B", "MB",
+            "C", "MO",
+            "D", "MS",
+            "E", "H"
+    );
+
+    private final String payroll = "D:/Southern Point Staffing/Southern Point Staffing Team Site - Finance/Payroll/Vensure";
+    // private final String payroll = System.getProperty("user.home") +
+    //       "\\Southern Point Staffing\\Southern Point Staffing Team Site - Finance\\Payroll\\Vensure";
 
     // private final String res = "./src/main/resources";
 
     // Initialize all used sets
     private final Set<String> placementFields = fieldSet("candidate", "jobOrder", "dateBegin", "id", "payRate", "customText20",
-            "workersCompensationRate");
-    private final  Set<String> candidateFields = fieldSet("id", "name", "ssn", "firstName", "lastName", "middleName",
+            "workersCompensationRate", "customText30", "customText31", "customText32", "customText33");//"customInt1", "customInt2", "customInt3", "customInt4");
+    private final Set<String> candidateFields = fieldSet("id", "name", "ssn", "firstName", "lastName", "middleName",
             "dateOfBirth", "gender", "ethnicity", "address", "email", "federalFilingStatus", "customText5",
-            "customText6", "customText7", "customText8", "customText9", "customText10", "customText11", "customText12");
+            "customText6", "customText7", "customText8", "customText9", "customText10", "customText11", "customText12",
+            "customText13", "customText14", "customText15");
 
     private Path employeePath;
     private Path depositPath;
+    private Path deductionPath;
     private int employeesParsed;
 
-    private Label status;
+    private final Label status;
 
     public EmployeeImportGenerator(BullhornAPI bullhorn) {
         super(bullhorn);
@@ -164,13 +176,13 @@ public class EmployeeImportGenerator extends BullhornUtility{
 
     /**
      * TASK ORDER:
-     *  (if first run) receive first placement ID as dialog input
-     *  Create (copy) a new Import Template into the Finance folder
-     *  Read Placement IDs from list
-     *  Parse ID, pull in Placement/Candidate and map data as normal
-     *  Paste mapped values into the copied spreadsheet, starting at row 8
-     *  Increment Placement ID, setting the next successful query as the last placement pulled
-     *  Once 10 empty placements have been cycled,
+     * (if first run) receive first placement ID as dialog input
+     * Create (copy) a new Import Template into the Finance folder
+     * Read Placement IDs from list
+     * Parse ID, pull in Placement/Candidate and map data as normal
+     * Paste mapped values into the copied spreadsheet, starting at row 8
+     * Increment Placement ID, setting the next successful query as the last placement pulled
+     * Once 10 empty placements have been cycled,
      */
     public void generateReport(int currentPlacement) {
         // Loop and process Placement/Candidates until 10 IDs are empty
@@ -196,7 +208,7 @@ public class EmployeeImportGenerator extends BullhornUtility{
             attempts = 0;
         }
         currentPlacement -= 10;
-        updateStats("Created import for Placement IDs " + startingPlacement + " through " + (currentPlacement-1));
+        updateStats("Created import for Placement IDs " + startingPlacement + " through " + (currentPlacement - 1));
         System.out.println("Ended. 10 attempts, stopped at " + currentPlacement);
     }
 
@@ -215,12 +227,8 @@ public class EmployeeImportGenerator extends BullhornUtility{
     /**
      * Routing number: customText5
      * Account number: customText6
-     *
      */
     public void generateEmployeeValues(Placement p, Candidate c) {
-        List<String> employee = new ArrayList<>();
-        List<String> deposit = new ArrayList<>();
-
         System.out.println("Looping through candidate " + c.getName());
 
         // Correct all fields that need adjustment from Bullhorn's API
@@ -228,23 +236,24 @@ public class EmployeeImportGenerator extends BullhornUtility{
         BigDecimal pay = p.getPayRate();
         String group = getGroup(pay);
 
-        employee.addAll(Arrays.asList("16727", c.getSsn(), c.getFirstName(), c.getLastName(), c.getMiddleName(),
-                Units.formatDate(c.getDateOfBirth()), trunc(c.getCustomText7(), 1), trunc(c.getEthnicity(), 1),
-                "", c.getEmail(), c.getAddress().getAddress1(), "", c.getAddress().getCity(),
-                c.getAddress().getState(), c.getAddress().getZip(), "", "", "A", "F", "", Units.formatDate(p.getDateBegin()),
-                Units.formatDate(p.getDateBegin()), Units.formatDate(p.getDateBegin()), "", "", "WEEKLY", "H",
-                p.getPayRate().toString(), "H", "40", "", "", "", p.getCustomText20(), wcCode, group, group, "100",
-                p.getCustomText20(), "", "", "", "", "", "", c.getCustomText8(), "N", c.getCustomText9(),
-                c.getCustomText10(), c.getCustomText11(), c.getCustomText12()));
-        deposit.addAll(Arrays.asList("16727", c.getName(), "A", "RVS", "", "C", c.getCustomText5(), c.getCustomText6(),
-                "RVS", "B", "", "", "P"));
-
         try {
-            generateFile(employeePath, employee);
-            generateFile(depositPath, deposit);
+            // Generate Employee Import file
+            generateFile(employeePath, Arrays.asList("16727", c.getSsn(), c.getFirstName(), c.getLastName(), c.getMiddleName(),
+                    Units.formatDate(c.getDateOfBirth()), trunc(c.getCustomText7(), 1), trunc(c.getEthnicity(), 1),
+                    "", c.getEmail(), c.getAddress().getAddress1(), "", c.getAddress().getCity(),
+                    c.getAddress().getState(), c.getAddress().getZip(), "", "", "A", "F", "", Units.formatDate(p.getDateBegin()),
+                    Units.formatDate(p.getDateBegin()), Units.formatDate(p.getDateBegin()), "", "", "WEEKLY", "H",
+                    p.getPayRate().toString(), "H", "40", "", "", "", p.getCustomText20(), wcCode, group, group, "100",
+                    p.getCustomText20(), "", "", "", "", "", "", c.getCustomText8(), "N", c.getCustomText9(),
+                    c.getCustomText10(), c.getCustomText11(), c.getCustomText12(), getStateStatus(c.getCustomText13()),
+                    c.getCustomText14(), "", "", "", "", "", "", c.getCustomText15()));
 
-            employee.clear();
-            deposit.clear();
+            // Generate Employee Deposit file
+            generateFile(depositPath, Arrays.asList("16727", c.getName(), "A", "RVS", "", "C", c.getCustomText5(),
+                    c.getCustomText6(), "RVS", "B", "", "", "P"));
+
+            // Generate Employee Deduction file
+            generateDeductionFile(p, c);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -273,6 +282,49 @@ public class EmployeeImportGenerator extends BullhornUtility{
         workbook.close();
     }
 
+    public void generateDeductionFile(Placement p, Candidate c) throws IOException {
+        // Create or find current deduction sheet
+
+        deductionPath = Path.of(payroll).resolve(Units.next(DayOfWeek.FRIDAY, 0) + "_EmployeeDeduction.xlsx");
+        if (Files.notExists(deductionPath)) {
+            Files.copy(getClass().getResourceAsStream("/Employee Deduction Template.xlsx"), deductionPath,
+                    StandardCopyOption.REPLACE_EXISTING);
+        }
+
+        // Instantiate workbook
+        FileInputStream excelReader = new FileInputStream(deductionPath.toString());
+        Workbook workbook = WorkbookFactory.create(excelReader);
+        Sheet worksheet = workbook.getSheetAt(0);
+
+        // Parse data into rows
+        Map<String, String> fieldMap = new HashMap<>();
+        fieldMap.put("8060", p.getCustomText30());
+        fieldMap.put("BACKGROUNDCHECK", p.getCustomText31());
+        fieldMap.put("8043", p.getCustomText32());
+        fieldMap.put("MISC", p.getCustomText33());
+
+        fieldMap.forEach((k, v) -> {
+            if (has(v)) {
+                Row row = worksheet.createRow(worksheet.getPhysicalNumberOfRows());
+
+                int col = 0;
+                row.createCell(col++).setCellValue("16727");
+                row.createCell(col++).setCellValue(c.getSsn());
+                row.createCell(col++).setCellValue(k);
+                row.createCell(col++).setCellValue(v);
+            } else {
+                System.out.println("No value associated with deduction code " + k);
+            }
+        });
+        excelReader.close();
+
+        // Write to Excel file and close connections
+        FileOutputStream excelWriter = new FileOutputStream(deductionPath.toString());
+        workbook.write(excelWriter);
+        excelWriter.close();
+        workbook.close();
+    }
+
     public String trunc(String str, int len) {
         return str == null ? "" : str.substring(0, len);
     }
@@ -287,6 +339,20 @@ public class EmployeeImportGenerator extends BullhornUtility{
             return "2";
         }
         return "1";
+    }
+
+    public String getStateStatus(String letter) {
+        if (letter == null)
+            return "S";
+        return maritalStatus.getOrDefault(letter, "S");
+    }
+
+    public String asStr(String str) {
+        return str == null ? "" : str;
+    }
+
+    public boolean has(String field) {
+        return field != null && Integer.parseInt(field) > 0;
     }
 
     private Set<String> fieldSet(String... fields) {

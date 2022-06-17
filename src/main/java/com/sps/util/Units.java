@@ -4,9 +4,11 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Locale;
 
 public class Units {
@@ -26,6 +28,11 @@ public class Units {
 
 	public static String todayMinus(int days) {
 		return dateFormat.format(LocalDateTime.now().minusDays(days));
+	}
+
+	public static String next(DayOfWeek day, int weeksAhead) {
+		return DateTimeFormatter.ofPattern("MM-dd-yyyy", Locale.ENGLISH).format(LocalDate.now().plusWeeks(weeksAhead).with(TemporalAdjusters.next(day)));
+		// return dateFormat.format(LocalDate.now().plusWeeks(weeksAhead).with(TemporalAdjusters.next(day)));
 	}
 
 	public static String formatDate(DateTime date) {

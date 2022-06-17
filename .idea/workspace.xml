@@ -4,14 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9bfe9870-c2cb-4756-9a33-db1462d9fded" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="9bfe9870-c2cb-4756-9a33-db1462d9fded" name="Changes" comment="Static fields removed">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/sps/bullhorn/BullhornAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/sps/bullhorn/BullhornAPI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/sps/bullhorn/BullhornUtility.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/sps/bullhorn/BullhornUtility.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/sps/bullhorn/EmployeeImportGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/sps/bullhorn/EmployeeImportGenerator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/sps/bullhorn/ResumeParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/sps/bullhorn/ResumeParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/sps/util/Units.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/sps/util/Units.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,6 +69,9 @@
       <filtered-out-file-type name="TAG" />
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="jar://$USER_HOME$/.jdks/corretto-16.0.2/lib/src.zip!/java.base/java/nio/file/Files.java" root0="SKIP_INSPECTION" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -218,6 +219,14 @@
       <option name="presentableId" value="Default" />
       <updated>1648582552913</updated>
     </task>
+    <task id="LOCAL-00001" summary="Static fields removed">
+      <created>1655304915212</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1655304915212</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -230,5 +239,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Static fields removed" />
+    <option name="LAST_COMMIT_MESSAGE" value="Static fields removed" />
   </component>
 </project>

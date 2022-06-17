@@ -50,8 +50,6 @@ public class BullhornAPI {
 			InputStream in = getClass().getResourceAsStream("/bullhorn.properties");
 			bullhornProps.load(in);
 
-			// bullhornProps.load(new FileInputStream("./src/main/resources/bullhorn.properties"));
-			// bullhornProps.load(new FileInputStream("bullhorn.properties"));
 			System.out.println(bullhornProps.getProperty("username"));
 
 			if (!Files.notExists(filePath)) {
